@@ -1,0 +1,31 @@
+version: "3.4"
+services:
+  origin:
+    build: docker/apache-origin-cmsd
+    container_name: origin
+    networks:
+      - origin-shield-cache
+    ports:
+      - 8080:80
+    environment:
+      - LOG_LEVEL=warn
+    volumes:
+    - ./static-media/:/var/www/origin/
+  # **************** Varnish cache  ****************
+  varnish-cache:
+    build: docker/varnish
+    container_name: varnish-cache
+    networks:
+      - origin-shield-cache
+    ports: 
+      - 80:80
+    depends_on:
+      - origin
+    environment:
+      - TARGET_HOST=origin
+      - TARGET_PORT=80
+
+
+networks:
+  origin-shield-cache:
+    driver: bridge
