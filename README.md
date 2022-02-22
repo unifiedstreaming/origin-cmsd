@@ -8,8 +8,8 @@ The objective of CMSD's proposal is to generate a specification on how every
 media server (intermediate and origin) can communicate data with each media
 object response, and have it received and processed consistently by every
 intermediate server and player.
-By using CMSD standard it is expected to increase efficiency and performance in
-distribution of a media workflow. Consequently, increase the quality of
+Using CMSD proposal is expected to increase efficiency and performance in
+distributing media workflows. Consequently, improve the quality of
 experience (QoE) for end-users.
 
 
@@ -69,7 +69,7 @@ du -h static-media/tos/targets/
 # 562M	static-media/tos/targets/
 ```
 
-You will noticed that after running `git lfs pull` the media content has
+You will notice that after running `git lfs pull`, the media content has
 grown from 6.2MB to around 562MB.
 
 
@@ -175,3 +175,29 @@ curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.das
 Example playback in DASH-IF reference player:
 
 ![logo](cmsd-example-playback.png)
+
+## Supported Key-Value Pairs in CMSD Headers
+
+| Description 	| Key Name 	| Header Name 	| Type & Unit 	| Value Definition 	|
+|---	|---	|---	|---	|---	|
+| Timestamp 	| t 	| CMSD-Dynamic 	| Integer [milliseconds] 	| Milliseconds since Unix Epoch in UTC. This value MUST be NTP synchronized and MUST  represent the time at which the intermediate server began the response. 	|
+| Entity identifier 	| n 	| CMSD-Dynamic & CMSD-Static 	| String 	| An identifier for the processing server. Maximum length of 64 characters. The value should identify both the organization and the intermediate server that is writing the key. 	|
+| Object type 	| ot 	| CMSD-Static 	| Token - one of [m,a,v,av,i,c,tt,k,o] 	| The media type of the current object being returned:<br><br>m = text file, such as a manifest or playlist<br><br>a = audio only<br><br>v = video only<br><br>i = init segment<br><br>c = caption or subtitle<br><br>tt = ISOBMFF timed text track<br><br>o = other<br><br>If the object type being returned is unknown, then this key MUST NOT be used. 	|
+| Stream type 	| st 	| CMSD-Dynamic 	| Token - one of [v,l] 	| v = all segments are available – e.g., VOD<br><br>l = segments become available over time – e.g., LIVE 	|
+| Streaming format 	| sf 	| CMSD-Static 	| Token - one of [d,h,s,o] 	| The streaming format defines the current response.<br><br>d = MPEG DASH<br><br>h = HTTP Live Streaming (HLS)<br><br>s = Smooth Streaming<br><br>o = other<br><br>If the streaming format being returned is unknown, then this key MUST NOT be used. 	|
+| Encoded bitrate 	| br 	| CMSD-Static 	| Integer [Kilobit per second] 	| The encoded bitrate of the audio or video object being requested. If the instantaneous bitrate varies over the duration of the object, the peak value should be communicated. 	|
+| Request ID 	| rid 	| CMSD-Static 	| String 	| A request ID, issued by the player or an upstream component, that is received by the origin when processing inbound content requests. 	|
+
+
+### Possible alternatives for implementing unsupported Key-Value Pairs from CMSD
+
+The unsupported Key-Value pairs from CMSD proposal can potentially be
+implemented by using the following modules at the Origin server:
+
+- [Apache2 mod_lua](https://httpd.apache.org/docs/trunk/mod/mod_lua.html)
+- [Apache2 mod_fcgid](https://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html)
+
+The intermediate server can be implemented using the most popular servers such
+as Varnish Cache or Varnish Cache plus. These two HTTP reverse proxies have
+plenty of VMODs that can modify HTTP request/response Headers based on the 
+specific use case and requirements.
