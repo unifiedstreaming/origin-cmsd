@@ -11,6 +11,8 @@ services:
       - LOG_LEVEL=warn
     volumes:
     - ./static-media/:/var/www/origin/
+    - ./docker/apache-origin-cmsd/conf.d/:/etc/apache2/conf.d/ 
+
   # **************** Varnish cache  ****************
   varnish-cache:
     build: docker/varnish

@@ -39,7 +39,7 @@ sub vcl_recv {
             set req.http.CMSD-Static = regsub(req.http.CMSD-Static,  "^(.*)$", ("\1 rid=" + req.http.X-Request-ID + "")); 
         }
         else {
-            set req.http.CMSD-Static = regsub(req.http.CMSD-Static,  "^(.*)$", ("\1, rid=" + req.http.X-Request-ID + "")); 
+            set req.http.CMSD-Static = regsub(req.http.CMSD-Static,  "^(.*)$", ("\1; rid=" + req.http.X-Request-ID + "")); 
         }
     }
 
@@ -81,24 +81,15 @@ sub vcl_deliver {
     }
     set resp.http.X-Request-ID = req.http.X-Request-ID;
 
-    # Example on how to replace an expecific value from a CMSD key 'n'
-    if(resp.http.CMSD-Static ~ ".*n="){
-        set resp.http.CMSD-Static = regsub(resp.http.CMSD-Static, "n=(\x22[^\x22]+)\x22", {"n="Varnish-123""}) ;
-    }
     // Set Request ID (rid) if does not exist
     if(resp.http.CMSD-Static !~ ".*rid="){
-        set resp.http.CMSD-Static = regsub(resp.http.CMSD-Static,  "^(.+)$", ("\1, rid=" + req.http.X-Request-ID + ""));    
-    }
-    ## Added encoded bitrate in case it was not found
-    if(resp.http.CMSD-Static !~ ".*br=" && req.url ~ "^.*-[audio|video]+_[a-z]+=[0-9]+.*$"){
-        set req.http.X-encoded = regsub(req.http.X-encoded,"^.*-[audio|video]+_[a-z]+=([0-9]+).*$", "\1");
-        set resp.http.CMSD-Static = regsub(resp.http.CMSD-Static,  "^(.+)$", ("\1, br=" + req.http.X-encoded + ""));    
+        set resp.http.CMSD-Static = regsub(resp.http.CMSD-Static,  "^(.+)$", ("\1; rid=" + req.http.X-Request-ID + ""));    
     }
     # Example on how to append a key and value using regsub
     # In this cases it appends n, etp, and rtt ot CMSD-Dynamic header
     if(resp.http.CMSD-Dynamic){
-        set resp.http.CMSD-Dynamic = regsub(resp.http.CMSD-Dynamic, "^(.+)$", {"\1, n="Varnish-123", etp="2XX" "});
+        set resp.http.CMSD-Dynamic = regsub(resp.http.CMSD-Dynamic, "^(.+)$", {"\1, n="Varnish-123"; etp=XXXX"});
         ## Added estimated RTT provided by VMOD tcp measured in milliseconds
-        set resp.http.CMSD-Dynamic = regsub(resp.http.CMSD-Dynamic, "^(.+)$", ("\1, rtt=" + tcp.get_estimated_rtt() + ""));   
+        set resp.http.CMSD-Dynamic = regsub(resp.http.CMSD-Dynamic, "^(.+)$", ("\1; rtt=" + tcp.get_estimated_rtt() + ""));   
     }
 }

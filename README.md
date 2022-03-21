@@ -18,8 +18,10 @@ experience (QoE) for end-users.
 This project contains prepacked content of [Tears of Steel](https://mango.blender.org/)
 in MPEG-DASH media fragments format using Unified Packager [(mp4split)](https://docs.unified-streaming.com/documentation/package/index.html#).
 
-Each video track is encoded with 96 closed GOP and with the
-following encoding specifications:
+Each video track is encoded with **96** closed GOP and packaged with
+media (audio and video) segment duration of **four** seconds. The following
+table provides the encoding specifications of the packaged content.
+
 
 |Track        |Resolution | Bitrate [kbps]| Codec | Profile  |
 |-------------|-----------|---------------|-------|----------|
@@ -69,7 +71,7 @@ du -h static-media/tos/targets/
 # 562M	static-media/tos/targets/
 ```
 
-You will notice that after running `git lfs pull`, the media content has
+You will notice that after running `git lfs pull` the media content has
 grown from 6.2MB to around 562MB.
 
 
@@ -90,7 +92,7 @@ docker-compose down
 ### Examples
 Example 1: Request of MPEG-DASH MPD.
 ```bash
-curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null 
+curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
@@ -100,39 +102,37 @@ curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null
 > Host: localhost
 > User-Agent: curl/7.64.1
 > Accept: */*
-> 
+>
 < HTTP/1.1 200 OK
-< Date: Fri, 18 Feb 2022 10:47:28 GMT
+< Date: Mon, 21 Mar 2022 12:42:39 GMT
 < Server: Apache/2.4.51 (Unix)
-< Last-Modified: Fri, 18 Feb 2022 09:42:04 GMT
-< ETag: "286c-5d847b2037042"
+< Last-Modified: Fri, 18 Feb 2022 15:18:16 GMT
+< ETag: "286c-5d84c6460f532"
 < Content-Length: 10348
-< CMSD-Load: load=l=0.03/0.04/0.01, idle=i=99%, busy=b=0%
 < Access-Control-Allow-Headers: origin, range
 < Access-Control-Allow-Methods: GET, HEAD, OPTIONS
 < Access-Control-Allow-Origin: *
 < Access-Control-Expose-Headers: Server,range
 < Cache-Control: max-age=2
-< X-Varnish: 98440
+< X-Varnish: 5
 < Age: 0
 < Via: 1.1 varnish (Varnish/6.5)
 < X-Cache: MISS
-< X-Request-ID: 281979283
-< CMSD-Static: ot=m, sf=d, st=v, rid=281979283
-< CMSD-Dynamic: t=1645181248753580, n="USP-123", etp=XXXX, rtt=XXXX, n="Varnish-123", etp="2XX" , rtt=0.000
+< X-Request-ID: 621795127
+< CMSD-Static: ot=m; sf=d; st=v; rid=621795127
+< CMSD-Dynamic: t=1647866559113992; n="USP-123"; etp=XXXX; rtt=XXXX; cpu=l, n="Varnish-123"; etp=XXXX; rtt=0.000
 < Accept-Ranges: bytes
 < Connection: keep-alive
-< 
+<
 { [10348 bytes data]
-100 10348  100 10348    0     0   673k      0 --:--:-- --:--:-- --:--:--  673k
+100 10348  100 10348    0     0   842k      0 --:--:-- --:--:-- --:--:--  842k
 * Connection #0 to host localhost left intact
 * Closing connection 0
 ```
 
 Example 2: Request of media segments.
 ```bash
-curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.dash > /dev/null                                   130 ↵  ✹ ✭25-clean-CMSD-files-add-hls-media
-
+curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.dash > /dev/null
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
@@ -144,32 +144,30 @@ curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.das
 > Accept: */*
 >
 < HTTP/1.1 200 OK
-< Date: Fri, 18 Feb 2022 10:46:42 GMT
+< Date: Mon, 21 Mar 2022 12:43:13 GMT
 < Server: Apache/2.4.51 (Unix)
-< Last-Modified: Fri, 18 Feb 2022 09:42:03 GMT
-< ETag: "2f5e0-5d847b1eeee93"
+< Last-Modified: Fri, 18 Feb 2022 15:18:15 GMT
+< ETag: "2f5e0-5d84c645025f5"
 < Content-Length: 194016
-< CMSD-Load: load=l=0.07/0.05/0.01, idle=i=99%, busy=b=0%
 < Access-Control-Allow-Headers: origin, range
 < Access-Control-Allow-Methods: GET, HEAD, OPTIONS
 < Access-Control-Allow-Origin: *
 < Access-Control-Expose-Headers: Server,range
 < Cache-Control: max-age=300
-< X-Varnish: 262316
+< X-Varnish: 8
 < Age: 0
 < Via: 1.1 varnish (Varnish/6.5)
 < X-Cache: MISS
-< X-Request-ID: 998774790
-< CMSD-Static: ot=v, sf=d, br=401000, st=v, rid=998774790
-< CMSD-Dynamic: t=1645181202780724, n="USP-123", etp=XXXX, rtt=XXXX, n="Varnish-123", etp="2XX" , rtt=0.000
+< X-Request-ID: 365012732
+< CMSD-Static: ot=v; sf=d; br=401000; st=v; rid=365012732
+< CMSD-Dynamic: t=1647866593988753; n="USP-123"; etp=XXXX; rtt=XXXX; cpu=l, n="Varnish-123"; etp=XXXX; rtt=0.000
 < Accept-Ranges: bytes
 < Connection: keep-alive
 <
-{ [13729 bytes data]
-100  189k  100  189k    0     0  7017k      0 --:--:-- --:--:-- --:--:-- 7017k
+{ [13786 bytes data]
+100  189k  100  189k    0     0  7578k      0 --:--:-- --:--:-- --:--:-- 7578k
 * Connection #0 to host localhost left intact
 * Closing connection 0
-
 ```
 
 Example playback in DASH-IF reference player:
