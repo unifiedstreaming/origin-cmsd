@@ -185,7 +185,7 @@ Example playback in DASH-IF reference player:
 | Streaming format 	| sf 	| CMSD-Static 	| Token - one of [d,h,s,o] 	| The streaming format defines the current response.<br><br>d = MPEG DASH<br><br>h = HTTP Live Streaming (HLS)<br><br>s = Smooth Streaming<br><br>o = other<br><br>If the streaming format being returned is unknown, then this key MUST NOT be used. 	|
 | Encoded bitrate 	| br 	| CMSD-Static 	| Integer [Kilobit per second] 	| The encoded bitrate of the audio or video object being requested. If the instantaneous bitrate varies over the duration of the object, the peak value should be communicated. 	|
 | Request ID 	| rid 	| CMSD-Static 	| String 	| A request ID, issued by the player or an upstream component, that is received by the origin when processing inbound content requests. 	|
-
+| CPU load 	| cpu 	| CMSD-Dynamic 	| Token - one of [l,m,h] 	| The server load when serving the content. Bucketed in one of three levels - low, medium and high. 	|
 
 ### Possible alternatives for implementing unsupported Key-Value Pairs from CMSD
 
