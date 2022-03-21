@@ -92,4 +92,34 @@ sub vcl_deliver {
         ## Added estimated RTT provided by VMOD tcp measured in milliseconds
         set resp.http.CMSD-Dynamic = regsub(resp.http.CMSD-Dynamic, "^(.+)$", ("\1; rtt=" + tcp.get_estimated_rtt() + ""));   
     }
+    ## Set the correct format for CPU load. Specifically `busy` time variable
+    ## from Header X-Origin-Load
+    ##           x <= 30%   ----> low: l
+    ##  30 % <=  x < 60%    ----> medium: m
+    ##  60 % =<  x <= 100% ----> high: h
+    if(resp.http.X-Origin-Load  ~ ".*b="){
+        set resp.http.CMSD-busy = regsub(resp.http.X-Origin-Load, "^.*\sbusy=b=([0-9]+)%$", "\1");
+
+        if(std.integer(resp.http.CMSD-busy, 0) < 30 )
+        {
+            set resp.http.CMSD-busy = "l";
+        }
+        elseif(std.integer(resp.http.CMSD-busy, 0) >= 30 && std.integer(resp.http.CMSD-busy, 0) < 60 )
+        {
+            set resp.http.CMSD-busy = "m";
+        }
+        else
+        {
+            set resp.http.CMSD-busy = "h";
+        }
+        
+        ## Set at the begining of CMSD-Dynamic the value Orign's CPU usage
+        # set resp.http.CMSD-Dynamic = regsub(resp.http.CMSD-Dynamic,  "^(.+)$", ("cpu=" + resp.http.CMSD-busy + "; \1"));  
+        set resp.http.CMSD-Dynamic = regsub(resp.http.CMSD-Dynamic,  "^(.+)(,)(.+)$", ("\1; cpu=" + resp.http.CMSD-busy + ",\3"));    
+  
+        unset resp.http.CMSD-busy;
+        # Remove Response header (X-Origin-Load) to caclcuate backend server (Origin) utilization
+        unset resp.http.X-Origin-Load;
+
+    }
 }
