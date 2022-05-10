@@ -4,7 +4,7 @@ services:
     build: docker/apache-origin-cmsd
     container_name: origin
     networks:
-      - origin-shield-cache
+      - origin-cmsd-net
     ports:
       - 8080:80
     environment:
@@ -12,22 +12,37 @@ services:
     volumes:
     - ./static-media/:/var/www/origin/
     - ./docker/apache-origin-cmsd/conf.d/:/etc/apache2/conf.d/ 
-
+    - ./docker/apache-origin-cmsd/lua/:/var/www/lua/
+  # **************** Origin shield proxy (Nginx)  ****************
+  nginx-njs:
+    build: docker/nginx
+    container_name: nginx-njs
+    networks:
+      - origin-cmsd-net
+    ports:
+      - 8081:80
+    depends_on:
+      - origin
+    environment:
+      - TARGET=origin
+      - LOG_LEVEL=warn
+    volumes:
+      - ./docker/nginx/njs/:/etc/nginx/njs/:ro
+    command: [nginx-debug, '-g', 'daemon off;']
   # **************** Varnish cache  ****************
   varnish-cache:
     build: docker/varnish
     container_name: varnish-cache
     networks:
-      - origin-shield-cache
+      - origin-cmsd-net
     ports: 
       - 80:80
     depends_on:
-      - origin
+      - nginx-njs
     environment:
-      - TARGET_HOST=origin
+      - TARGET_HOST=nginx-njs
       - TARGET_PORT=80
 
-
 networks:
-  origin-shield-cache:
+  origin-cmsd-net:
     driver: bridge

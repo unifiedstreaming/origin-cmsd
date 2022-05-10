@@ -1,0 +1,26 @@
+# Add milliseconds precision to $time_local
+map "$time_local:$msec" $time_local_w_ms { ~(^\S+)(\s+\S+):\d+.(\d+)$ $1.$3$2; }
+
+log_format main '$remote_addr - $remote_user [$time_local_w_ms] '
+                'Cache-Control: $upstream_http_cache_control '
+                'Expires: $upstream_http_expires '
+                '"$request" ($status) '
+                '"$http_user_agent" '
+                'rid="$request_id" pck="$scheme://$proxy_host$request_uri" '
+                'ucs="$upstream_cache_status" '
+                'ckey="$scheme$host$request_uri" '
+                'msec="$msec" '
+                'request_time="$request_time" '; # Seconds
+
+access_log  /var/log/nginx/access.log  main;
+
+# Upstream server log
+log_format upstreamlog '[$time_local_w_ms] $remote_addr - $remote_user - '
+                        '$server_name $host to: $upstream_addr: $request '
+                        'rid="$request_id" '
+                        '$status upstream_response_time '
+                        '$upstream_response_time msec $msec request_time '
+                        '$request_time '
+                        'xrid="$http_x_request_id" ';
+
+access_log /var/log/nginx/upstream-access.log upstreamlog;

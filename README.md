@@ -92,7 +92,7 @@ docker-compose down
 ### Examples
 Example 1: Request of MPEG-DASH MPD.
 ```bash
-curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null
+curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null                                                                                                                                                16:24:01
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
@@ -104,35 +104,35 @@ curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null
 > Accept: */*
 >
 < HTTP/1.1 200 OK
-< Date: Mon, 21 Mar 2022 12:42:39 GMT
-< Server: Apache/2.4.51 (Unix)
-< Last-Modified: Fri, 18 Feb 2022 15:18:16 GMT
-< ETag: "286c-5d84c6460f532"
-< Content-Length: 10348
+< Server: nginx/1.21.4
+< Date: Tue, 10 May 2022 14:23:59 GMT
+< Last-Modified: Tue, 10 May 2022 14:22:26 GMT
+< ETag: "286c-5dea90dd3585e"
 < Access-Control-Allow-Headers: origin, range
 < Access-Control-Allow-Methods: GET, HEAD, OPTIONS
 < Access-Control-Allow-Origin: *
 < Access-Control-Expose-Headers: Server,range
 < Cache-Control: max-age=2
-< X-Varnish: 5
-< Age: 0
+< Content-Length: 10348
+< X-Varnish: 65538 6
+< Age: 3
 < Via: 1.1 varnish (Varnish/6.5)
-< X-Cache: MISS
-< X-Request-ID: 621795127
-< CMSD-Static: ot=m; sf=d; st=v; rid=621795127
-< CMSD-Dynamic: t=1647866559113992; n="USP-123"; etp=XXXX; rtt=XXXX; cpu=l, n="Varnish-123"; etp=XXXX; rtt=0.000
+< X-Cache: HIT
+< X-Request-ID: 185518114
+< CMSD-Static: ot=m; sf=d; st=v; rid=185518114
+< CMSD-Dynamic: n=USP-321; etp=197180; rtt=0; t=1652192639878795; n="USP-123", u="Nginx-123"; etp=0.00064; rtt=125; cpu=l, n="Varnish-123"; etp=XXXX; rtt=0.000
 < Accept-Ranges: bytes
 < Connection: keep-alive
 <
 { [10348 bytes data]
-100 10348  100 10348    0     0   842k      0 --:--:-- --:--:-- --:--:--  842k
+100 10348  100 10348    0     0  2021k      0 --:--:-- --:--:-- --:--:-- 2021k
 * Connection #0 to host localhost left intact
 * Closing connection 0
 ```
 
 Example 2: Request of media segments.
 ```bash
-curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.dash > /dev/null
+curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.dash > /dev/null                                                                                                                      16:24:19
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
@@ -144,28 +144,28 @@ curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.das
 > Accept: */*
 >
 < HTTP/1.1 200 OK
-< Date: Mon, 21 Mar 2022 12:43:13 GMT
-< Server: Apache/2.4.51 (Unix)
-< Last-Modified: Fri, 18 Feb 2022 15:18:15 GMT
-< ETag: "2f5e0-5d84c645025f5"
+< Server: nginx/1.21.4
+< Date: Tue, 10 May 2022 14:24:20 GMT
 < Content-Length: 194016
+< Last-Modified: Tue, 10 May 2022 14:22:25 GMT
+< ETag: "2f5e0-5dea90dc9cb9c"
 < Access-Control-Allow-Headers: origin, range
 < Access-Control-Allow-Methods: GET, HEAD, OPTIONS
 < Access-Control-Allow-Origin: *
 < Access-Control-Expose-Headers: Server,range
 < Cache-Control: max-age=300
-< X-Varnish: 8
+< X-Varnish: 32773
 < Age: 0
 < Via: 1.1 varnish (Varnish/6.5)
 < X-Cache: MISS
-< X-Request-ID: 365012732
-< CMSD-Static: ot=v; sf=d; br=401000; st=v; rid=365012732
-< CMSD-Dynamic: t=1647866593988753; n="USP-123"; etp=XXXX; rtt=XXXX; cpu=l, n="Varnish-123"; etp=XXXX; rtt=0.000
+< X-Request-ID: 223762621
+< CMSD-Static: ot=v; sf=d; br=401000; st=v; rid=223762621
+< CMSD-Dynamic: n=USP-321; etp=527401; rtt=3; t=1652192660623259; n="USP-123", u="Nginx-123"; etp=0.001379310344827586; rtt=58; cpu=l, n="Varnish-123"; etp=XXXX; rtt=0.000
 < Accept-Ranges: bytes
 < Connection: keep-alive
 <
-{ [13786 bytes data]
-100  189k  100  189k    0     0  7578k      0 --:--:-- --:--:-- --:--:-- 7578k
+{ [13731 bytes data]
+100  189k  100  189k    0     0  5741k      0 --:--:-- --:--:-- --:--:-- 5741k
 * Connection #0 to host localhost left intact
 * Closing connection 0
 ```

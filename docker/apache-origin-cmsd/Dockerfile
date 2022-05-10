@@ -15,6 +15,7 @@ RUN apk \
         apache2-ssl \
         python3 \
         py3-pip \
+        apache2-lua \
 &&  rm -f /var/cache/apk/*
 
 
