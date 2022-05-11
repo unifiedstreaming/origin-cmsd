@@ -1,26 +1,47 @@
-# Add milliseconds precision to $time_local
-map "$time_local:$msec" $time_local_w_ms { ~(^\S+)(\s+\S+):\d+.(\d+)$ $1.$3$2; }
+js_import cmsd_njs from http/cmsd.js;
+js_set $headers_json cmsd_njs.headers_to_json;
 
-log_format main '$remote_addr - $remote_user [$time_local_w_ms] '
-                'Cache-Control: $upstream_http_cache_control '
-                'Expires: $upstream_http_expires '
-                '"$request" ($status) '
-                '"$http_user_agent" '
-                'rid="$request_id" pck="$scheme://$proxy_host$request_uri" '
-                'ucs="$upstream_cache_status" '
-                'ckey="$scheme$host$request_uri" '
-                'msec="$msec" '
-                'request_time="$request_time" '; # Seconds
+
+# Add milliseconds precision to $time_local and iso8601 time format
+map "$time_local:$msec" $time_local_ms { ~(^\S+)(\s+\S+):\d+\.(\d+)$ $1.$3$2; }
+map "$time_iso8601 # $msec" $time_iso8601_ms { "~(^[^+]+)(\+[0-9:]+) # \d+\.(\d+)$" $1.$3$2; }
+
+log_format main escape=json
+    '{'
+        '"time_local":"$time_local",'
+        '"time_iso":"$time_iso8601",'
+        '"time_local_ms":"$time_local_ms",'
+        '"time_iso_ms":"$time_iso8601_ms",'
+        '"remote_addr":"$remote_addr",'
+        '"remote_user":"$remote_user",'
+        '"request_id":"$request_id",'
+        '"method":"$request_method",'
+        '"args":"$args",'
+        '"arg_name":"$arg_name",'
+        '"request":"$request",'
+        '"request_body":"$request_body",'
+        '"status": "$status",'
+        '"request_length":"$request_length",'
+        '"body_bytes_sent":"$body_bytes_sent",'
+        '"request_time":"$request_time",'
+        '"connection":"$connection",'
+        '"upstream_response_time":"$upstream_response_time",'
+        '"connection_req":"$connection_requests",'
+        '"http_referrer":"$http_referer",'
+        '"http_sent":"$sent_http_range",'
+        '"pipe":"$pipe",'
+        '"host":"$host",'
+        '"uri":"$uri",'
+        '"req_uri":"$request_uri",'
+        '"cookie":"$cookie_name",'
+        '"bytes_sent":"$bytes_sent",'
+        '"http_user_agent":"$http_user_agent",'
+        '"tcpinfo_rtt":"$tcpinfo_rtt",'
+        '"tcpinfo_rttvar":"$tcpinfo_rttvar",'
+        '"tcpinfo_snd_cwnd":"$tcpinfo_snd_cwnd",'
+        '"tcpinfo_rcv_space":"$tcpinfo_rcv_space",'
+        '"headers":"$headers_json"'
+    '}';
+
 
 access_log  /var/log/nginx/access.log  main;
-
-# Upstream server log
-log_format upstreamlog '[$time_local_w_ms] $remote_addr - $remote_user - '
-                        '$server_name $host to: $upstream_addr: $request '
-                        'rid="$request_id" '
-                        '$status upstream_response_time '
-                        '$upstream_response_time msec $msec request_time '
-                        '$request_time '
-                        'xrid="$http_x_request_id" ';
-
-access_log /var/log/nginx/upstream-access.log upstreamlog;

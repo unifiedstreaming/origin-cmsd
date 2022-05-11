@@ -21,6 +21,7 @@ http {
         keepalive 20;
     }
 
+    # Specific log format where $headers_json is used by nginx-logs.conf
     include /etc/nginx/nginx-logs.conf;
 
     sendfile        on;

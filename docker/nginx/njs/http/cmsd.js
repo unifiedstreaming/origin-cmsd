@@ -31,4 +31,9 @@ function add_cmsd_headers(r)
     }
 }
 
-export default {add_cmsd_headers}
+// Set query request parameters to a env variable for logging purposes
+function headers_to_json(r) {
+    return JSON.stringify(r.headersIn)
+  }
+
+export default {add_cmsd_headers, headers_to_json}
