@@ -39,8 +39,9 @@ table provides the encoding specifications of the packaged content.
 ## Setup
 
 ```bash
-                       [Apache2]  <-- [Varnish cache] <-- client request
-[Local disk] <-- MPEG-DASH segment
+                   [Apache2]  <-- [Nginx] <-- [Varnish cache] <-- client request
+[Local disk] <-- MPEG-DASH MPD 
+               and media segments
 
  tears-of-steel.mpd
  tears-of-steel-audio_eng=128002-0.dash
@@ -81,6 +82,7 @@ docker-compose up -d
 ```
 
 - Varnish cache MPD location: http://localhost/tos/targets/tears-of-steel.mpd
+- Nginx Origin shield: http://localhost:8081/tos/targets/tears-of-steel.mpd
 - Origin MPD location:  http://localhost:8080/tos/targets/tears-of-steel.mpd
 
 
@@ -92,7 +94,7 @@ docker-compose down
 ### Examples
 Example 1: Request of MPEG-DASH MPD.
 ```bash
-curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null                                                                                                                                                16:24:01
+$ curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null                                                                                                                                                16:24:01
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
@@ -132,7 +134,7 @@ curl -v http://localhost/tos/targets/tears-of-steel.mpd > /dev/null             
 
 Example 2: Request of media segments.
 ```bash
-curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.dash > /dev/null                                                                                                                      16:24:19
+$ curl -v  http://localhost/tos/targets/tears-of-steel-video_eng\=401000-57600.dash > /dev/null                                                                                                                      16:24:19
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying ::1...
